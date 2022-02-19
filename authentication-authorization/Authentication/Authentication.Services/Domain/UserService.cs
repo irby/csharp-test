@@ -51,7 +51,7 @@ namespace Authentication.Services.Domain
                 throw new UnprocessableEntityException(ErrorCode.IncorrectPassword);
             }
 
-            user.HashedPassword = HashUtil.HashPassword(newPassword, HashUtil.GetSalt());
+            user.HashedPassword = HashUtil.HashPassword(newPassword);
             user.SetModified(currentUser.Id, true);
 
             await Db.SaveChangesAsync();

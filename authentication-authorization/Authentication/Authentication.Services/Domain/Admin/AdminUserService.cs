@@ -87,7 +87,7 @@ namespace Authentication.Services.Domain.Admin
                 Email = dto.Email,
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
-                HashedPassword = HashUtil.HashPassword(dto.Password, HashUtil.GetSalt()),
+                HashedPassword = HashUtil.HashPassword(dto.Password),
                 Role = dto.Role
             };
 

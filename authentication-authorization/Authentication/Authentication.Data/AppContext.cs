@@ -33,7 +33,7 @@ namespace Authentication.Data
                     LastName = "Doe",
                     Email = "john.doe@test.com",
                     Role = Role.SuperAdmin,
-                    HashedPassword = HashUtil.HashPassword("test123", HashUtil.GetSalt()),
+                    HashedPassword = HashUtil.HashPassword("test123"),
                     IsEnabled = true
                 }
             };

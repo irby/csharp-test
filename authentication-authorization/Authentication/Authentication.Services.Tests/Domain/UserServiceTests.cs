@@ -27,7 +27,7 @@ namespace Authentication.Services.Tests.Domain
             var user = new User
             {
                 Email = "jane.doe@test.com",
-                HashedPassword = HashUtil.HashPassword(oldPassword, HashUtil.GetSalt())
+                HashedPassword = HashUtil.HashPassword(oldPassword)
             };
             user.SetCreatedAndEnabled();
             await Db.Users.AddAsync(user);
@@ -61,7 +61,7 @@ namespace Authentication.Services.Tests.Domain
             var user = new User
             {
                 Email = "jane.doe@test.com",
-                HashedPassword = HashUtil.HashPassword(oldPassword, HashUtil.GetSalt())
+                HashedPassword = HashUtil.HashPassword(oldPassword)
             };
 
             currentUser.SetCreatedAndEnabled();
@@ -91,7 +91,7 @@ namespace Authentication.Services.Tests.Domain
             var user = new User
             {
                 Email = "jane.doe@test.com",
-                HashedPassword = HashUtil.HashPassword(oldPassword, HashUtil.GetSalt())
+                HashedPassword = HashUtil.HashPassword(oldPassword)
             };
 
             currentUser.SetCreatedAndEnabled();
@@ -115,7 +115,7 @@ namespace Authentication.Services.Tests.Domain
             var user = new User
             {
                 Email = "jane.doe@test.com",
-                HashedPassword = HashUtil.HashPassword(oldPassword, HashUtil.GetSalt())
+                HashedPassword = HashUtil.HashPassword(oldPassword)
             };
             user.SetCreatedAndEnabled();
             await Db.Users.AddAsync(user);
@@ -137,7 +137,7 @@ namespace Authentication.Services.Tests.Domain
             var user = new User
             {
                 Email = "jane.doe@test.com",
-                HashedPassword = HashUtil.HashPassword(oldPassword, HashUtil.GetSalt())
+                HashedPassword = HashUtil.HashPassword(oldPassword)
             };
             user.SetCreatedAndEnabled();
             await Db.Users.AddAsync(user);
@@ -159,7 +159,7 @@ namespace Authentication.Services.Tests.Domain
             var user = new User
             {
                 Email = "jane.doe@test.com",
-                HashedPassword = HashUtil.HashPassword(oldPassword, HashUtil.GetSalt())
+                HashedPassword = HashUtil.HashPassword(oldPassword)
             };
             user.SetCreatedAndEnabled();
             await Db.Users.AddAsync(user);
@@ -194,7 +194,7 @@ namespace Authentication.Services.Tests.Domain
             var user = new User
             {
                 Email = "jane.doe@test.com",
-                HashedPassword = HashUtil.HashPassword(oldPassword, HashUtil.GetSalt())
+                HashedPassword = HashUtil.HashPassword(oldPassword)
             };
             currentUser.SetCreatedAndEnabled();
             await Db.Users.AddAsync(user);

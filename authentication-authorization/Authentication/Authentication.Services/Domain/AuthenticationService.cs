@@ -96,7 +96,7 @@ namespace Authentication.Services.Domain
                 Email = createUserDto.Email.Trim().ToLower(),
                 FirstName = createUserDto.FirstName.Trim().ToLower(),
                 LastName = createUserDto.LastName.Trim().ToLower(),
-                HashedPassword = HashUtil.HashPassword(createUserDto.Password, HashUtil.GetSalt()),
+                HashedPassword = HashUtil.HashPassword(createUserDto.Password),
                 Role = Role.User
             };
             

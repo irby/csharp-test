@@ -10,20 +10,14 @@ namespace Authentication.Core.Utilities
         private const int HashSize = 64;
         private const int SaltSize = 32;
         
-        public static string HashPassword(string password, byte[] salt)
+        public static string HashPassword(string password)
         {
+            var salt = GetSalt();
             var hash = GetHash(password, salt);
             var hashBytes = new byte[SaltSize + HashSize];
             Array.Copy(salt, 0, hashBytes, 0, SaltSize);
             Array.Copy(hash, 0, hashBytes, SaltSize, HashSize);
             return Convert.ToBase64String(hashBytes);
-        }
-
-        public static byte[] GetSalt()
-        {
-            byte[] salt;
-            new RNGCryptoServiceProvider().GetBytes(salt = new byte[SaltSize]);
-            return salt;
         }
 
         public static bool Validate(string password, string userHashedPassword)
@@ -49,6 +43,13 @@ namespace Authentication.Core.Utilities
         {
             var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000);
             return pbkdf2.GetBytes(HashSize);
+        }
+        
+        private static byte[] GetSalt()
+        {
+            byte[] salt;
+            new RNGCryptoServiceProvider().GetBytes(salt = new byte[SaltSize]);
+            return salt;
         }
     }
 }

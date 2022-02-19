@@ -10,9 +10,8 @@ namespace Authentication.Core.Tests.Utilities
         public void HashPassword_WhenProvidedAStringAndSalt_HashesPassword()
         {
             var password = "HelloWorld";
-            var salt = HashUtil.GetSalt();
 
-            var result = HashUtil.HashPassword(password, salt);
+            var result = HashUtil.HashPassword(password);
             Assert.IsNotNull(result);
             Assert.IsNotEmpty(result);
         }
@@ -21,8 +20,7 @@ namespace Authentication.Core.Tests.Utilities
         public void ValidatePassword_WhenProvidedCorrectPassword_ReturnsTrue()
         {
             var password = "HelloWorld";
-            var salt = HashUtil.GetSalt();
-            var hash = HashUtil.HashPassword(password, salt);
+            var hash = HashUtil.HashPassword(password);
 
             var result = HashUtil.Validate(password, hash);
             Assert.True(result);
@@ -32,8 +30,7 @@ namespace Authentication.Core.Tests.Utilities
         public void ValidatePassword_WhenProvidedIncorrectPassword_ReturnsFalse()
         {
             var password = "HelloWorld";
-            var salt = HashUtil.GetSalt();
-            var hash = HashUtil.HashPassword(password, salt);
+            var hash = HashUtil.HashPassword(password);
 
             var result = HashUtil.Validate("helloworld", hash);
             Assert.False(result);

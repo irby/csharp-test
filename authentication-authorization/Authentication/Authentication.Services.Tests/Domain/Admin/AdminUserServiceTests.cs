@@ -501,7 +501,7 @@ namespace Authentication.Services.Tests.Domain.Admin
                 LastName = "Doe",
                 IsEnabled = false,
                 Role = Role.User,
-                HashedPassword = HashUtil.HashPassword("hello123", HashUtil.GetSalt())
+                HashedPassword = HashUtil.HashPassword("hello123")
             };
 
             Db.Users.Add(currentUser);

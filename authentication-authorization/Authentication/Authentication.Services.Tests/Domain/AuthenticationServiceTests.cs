@@ -62,7 +62,7 @@ namespace Authentication.Services.Tests.Domain
             var user = new User()
             {
                 Email = "jane.doe@test.com",
-                HashedPassword = HashUtil.HashPassword("hello123", HashUtil.GetSalt()),
+                HashedPassword = HashUtil.HashPassword("hello123"),
                 IsEnabled = true
             };
             Db.Users.Add(user);
@@ -80,7 +80,7 @@ namespace Authentication.Services.Tests.Domain
             var user = new User()
             {
                 Email = "jane.doe@test.com",
-                HashedPassword = HashUtil.HashPassword("hello123", HashUtil.GetSalt()),
+                HashedPassword = HashUtil.HashPassword("hello123"),
                 IsEnabled = true,
                 NumberOfLoginFailures = 4
             };
@@ -97,7 +97,7 @@ namespace Authentication.Services.Tests.Domain
             var user = new User()
             {
                 Email = "jane.doe@test.com",
-                HashedPassword = HashUtil.HashPassword("hello123", HashUtil.GetSalt()),
+                HashedPassword = HashUtil.HashPassword("hello123"),
                 IsEnabled = true
             };
             Db.Users.Add(user);
@@ -116,7 +116,7 @@ namespace Authentication.Services.Tests.Domain
             var user = new User()
             {
                 Email = "jane.doe@test.com",
-                HashedPassword = HashUtil.HashPassword("hello123", HashUtil.GetSalt()),
+                HashedPassword = HashUtil.HashPassword("hello123"),
                 IsEnabled = true
             };
             Db.Users.Add(user);
@@ -151,7 +151,7 @@ namespace Authentication.Services.Tests.Domain
             var user = new User()
             {
                 Email = "jane.doe@test.com",
-                HashedPassword = HashUtil.HashPassword("hello123", HashUtil.GetSalt()),
+                HashedPassword = HashUtil.HashPassword("hello123"),
                 IsEnabled = false
             };
             Db.Users.Add(user);
@@ -173,7 +173,7 @@ namespace Authentication.Services.Tests.Domain
             var user = new User()
             {
                 Email = "jane.doe@test.com",
-                HashedPassword = HashUtil.HashPassword("hello123", HashUtil.GetSalt()),
+                HashedPassword = HashUtil.HashPassword("hello123"),
                 IsEnabled = true,
                 NumberOfLoginFailures = 5
             };

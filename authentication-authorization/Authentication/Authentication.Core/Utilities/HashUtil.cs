@@ -9,6 +9,7 @@ namespace Authentication.Core.Utilities
     {
         private const int HashSize = 64;
         private const int SaltSize = 32;
+        
         public static string HashPassword(string password, byte[] salt)
         {
             var hash = GetHash(password, salt);

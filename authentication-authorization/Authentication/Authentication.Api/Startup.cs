@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Authentication.Api.Authentication;
 using Authentication.Api.Handlers;
 using Authentication.Core.Interfaces.Authentication;
@@ -13,14 +10,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using AppContext = Authentication.Data.AppContext;
@@ -49,7 +43,7 @@ namespace Authentication.Api
             services.AddDistributedMemoryCache();
 
             var authConfig = new AuthenticationConfiguration();
-            var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("SIGNING_CREDENTIALS"));
+            var key = Encoding.ASCII.GetBytes(GetEnvironmentVariable("SIGNING_CREDENTIALS"));
             authConfig.SigningCredentials =
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature);
             
@@ -105,6 +99,12 @@ namespace Authentication.Api
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+        }
+
+        private static string GetEnvironmentVariable(string key)
+        {
+            return Environment.GetEnvironmentVariable(key) ??
+                   throw new Exception($"Environment variable `{key}` not found");
         }
     }
 }

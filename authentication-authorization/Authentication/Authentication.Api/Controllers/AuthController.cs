@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Authentication.Core.Models.Authentication;
 using Authentication.Core.Models.Dto;
 using Authentication.Core.Utilities;
@@ -32,7 +28,6 @@ namespace Authentication.Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDto dto)
         {
-            
             var user = await _authService.LoginUserAsync(dto.Email, dto.Password);
             var tokenResponse = AuthTokenUtil.CreateToken(user, new SigningCredentials(_authConfig.SigningCredentials.Key, SecurityAlgorithms.HmacSha256Signature));
             return Ok(tokenResponse);

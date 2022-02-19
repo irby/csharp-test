@@ -16,6 +16,14 @@ namespace Authentication.Data
             Setup();
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (optionsBuilder.Options.Extensions.FirstOrDefault(p => p.Info.LogFragment.Contains(StringConstants.AuthenticationDb)) != null)
+            {
+                optionsBuilder.UseInMemoryDatabase("name=DB");
+            }
+        }
+
         public DbSet<User> Users { get; set; }
         public DbSet<UserPermission> UserPermissions { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }

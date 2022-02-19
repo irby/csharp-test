@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Authentication.Core.Enums;
 using Authentication.Core.Exceptions;
@@ -23,7 +24,7 @@ namespace Authentication.Services.Tests.Domain
         [Test]
         public async Task CreateUserAsync_WhenUserDoesNotExistAndModelIsValid_CreatesUserAsync()
         {
-            var createUserDto = new CreateUserDto()
+            var createUserDto = new UserCreateDto()
             {
                 Email = "jane.doe@test.com",
                 FirstName = "Jane",
@@ -33,14 +34,14 @@ namespace Authentication.Services.Tests.Domain
             
             var user = await Service.CreateUserAsync(createUserDto);
             Assert.NotNull(user);
-            Assert.NotNull(user.Id);
+            Assert.AreNotEqual(new Guid(), user.Id);
             Assert.NotNull(await Db.Users.FirstOrDefaultAsync(p => p.Id == user.Id && p.IsEnabled));
         }
         
         [Test]
         public async Task CreateUserAsync_WhenPasswordIsNotValid_ThrowsBadRequestExceptionAsync()
         {
-            var createUserDto = new CreateUserDto()
+            var createUserDto = new UserCreateDto()
             {
                 Email = "jane.doe@test.com",
                 FirstName = "Jane",
@@ -55,7 +56,7 @@ namespace Authentication.Services.Tests.Domain
         [Test]
         public async Task CreateUserAsync_WhenEmailIsNotValid_ThrowsBadRequestExceptionAsync()
         {
-            var createUserDto = new CreateUserDto()
+            var createUserDto = new UserCreateDto()
             {
                 Email = "jane.doe",
                 FirstName = "Jane",
@@ -76,7 +77,7 @@ namespace Authentication.Services.Tests.Domain
             });
             await Db.SaveChangesAsync();
             
-            var createUserDto = new CreateUserDto()
+            var createUserDto = new UserCreateDto()
             {
                 Email = "jane.doe@test.com",
                 FirstName = "Jane",

@@ -19,21 +19,21 @@ namespace Authentication.Services.Domain
         {
         }
         
-        public async Task<UserResponseDto> CreateUserAsync(CreateUserDto createUserDto)
+        public async Task<UserResponseDto> CreateUserAsync(UserCreateDto userCreateDto)
         {
-            ModelValidator.Validate(true, createUserDto.Email, createUserDto.Password, createUserDto.FirstName, createUserDto.LastName);
+            ModelValidator.Validate(true, userCreateDto.Email, userCreateDto.Password, userCreateDto.FirstName, userCreateDto.LastName);
 
-            if (!CredentialValidationUtil.IsValidPassword(createUserDto.Password))
+            if (!CredentialValidationUtil.IsValidPassword(userCreateDto.Password))
             {
                 throw new BadRequestException(ErrorCode.InvalidPassword);
             }
             
-            if (!CredentialValidationUtil.IsValidEmail(createUserDto.Email))
+            if (!CredentialValidationUtil.IsValidEmail(userCreateDto.Email))
             {
                 throw new BadRequestException(ErrorCode.InvalidEmail);
             }
             
-            var user = await Db.Users.Where(p => p.Email.Trim().ToLower() == createUserDto.Email.Trim().ToLower())
+            var user = await Db.Users.Where(p => p.Email.Trim().ToLower() == userCreateDto.Email.Trim().ToLower())
                 .Include(p => p.UserPermissions)
                 .FirstOrDefaultAsync();
 
@@ -42,10 +42,10 @@ namespace Authentication.Services.Domain
 
             user = new User()
             {
-                Email = createUserDto.Email.Trim().ToLower(),
-                FirstName = createUserDto.FirstName.Trim().ToLower(),
-                LastName = createUserDto.LastName.Trim().ToLower(),
-                HashedPassword = HashUtil.HashPassword(createUserDto.Password),
+                Email = userCreateDto.Email.Trim().ToLower(),
+                FirstName = userCreateDto.FirstName.Trim().ToLower(),
+                LastName = userCreateDto.LastName.Trim().ToLower(),
+                HashedPassword = HashUtil.HashPassword(userCreateDto.Password),
                 Role = Role.User
             };
             

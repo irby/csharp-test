@@ -65,9 +65,19 @@ namespace Authentication.Services.Domain.Admin
                    ?? throw new UnprocessableEntityException(ErrorCode.AccountNotFound);
         }
 
-        public async Task<UserResponseDto> CreateUserAsync(CreateUserDto dto)
+        public async Task<UserResponseDto> CreateUserAsync(UserCreateDto dto)
         {
             ModelValidator.Validate(true, dto.Email, dto.FirstName, dto.LastName, dto.Password);
+
+            if (!CredentialValidationUtil.IsValidPassword(dto.Password))
+            {
+                throw new BadRequestException(ErrorCode.InvalidPassword);
+            }
+            
+            if (!CredentialValidationUtil.IsValidEmail(dto.Email))
+            {
+                throw new BadRequestException(ErrorCode.InvalidEmail);
+            }
             
             var currentUser = await GetCurrentUserAsync();
 
@@ -127,13 +137,18 @@ namespace Authentication.Services.Domain.Admin
         
         public async Task<UserResponseDto> UpdateUserAsync(UserUpdateDto dto)
         {
+            ModelValidator.Validate(true, dto.Email, dto.FirstName, dto.LastName, dto.UserPermissions, dto.UserRole);
+            
+            if (!CredentialValidationUtil.IsValidEmail(dto.Email))
+            {
+                throw new BadRequestException(ErrorCode.InvalidEmail);
+            }
+
             var currentUser = await GetCurrentUserAsync();
             if (!currentUser.HasPermissions(Permission.CanUpdateUser))
             {
                 throw new NotAuthorizedException();
             }
-
-            ModelValidator.Validate(true, dto.Email, dto.FirstName, dto.LastName, dto.UserPermissions, dto.UserRole);
 
             var user = await Db.Users.FirstOrDefaultAsync(p => p.Id == dto.Id)
                        ?? throw new UnprocessableEntityException(ErrorCode.AccountNotFound);

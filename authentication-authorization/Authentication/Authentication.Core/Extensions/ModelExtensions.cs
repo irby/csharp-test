@@ -1,6 +1,8 @@
 ﻿using System;
+using Authentication.Core.Enums;
 using Authentication.Core.Interfaces;
 using Authentication.Core.Models.Domain;
+using Authentication.Core.Models.Domain.Accounts;
 
 namespace Authentication.Core.Extensions
 {
@@ -23,6 +25,40 @@ namespace Authentication.Core.Extensions
             model.ModifiedOn = DateTimeOffset.UtcNow;
             model.ModifiedBy = id;
             model.IsEnabled = isEnabled;
+        }
+
+        /// <summary>
+        /// Returns true if user has all permissions passed in, returns false otherwise
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="permissions"></param>
+        /// <returns></returns>
+        public static bool HasPermissions(this User user, params Permission[] permissions)
+        {
+            foreach (var permission in permissions)
+            {
+                if (!user.Permissions.Contains(permission))
+                    return false;
+            }
+
+            return true;
+        }
+        
+        /// <summary>
+        /// Returns true if user has any of the permissions passed in, returns false otherwise
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="permissions"></param>
+        /// <returns></returns>
+        public static bool HasAnyPermissions(this User user, params Permission[] permissions)
+        {
+            foreach (var permission in permissions)
+            {
+                if (user.Permissions.Contains(permission))
+                    return true;
+            }
+
+            return false;
         }
     }
 }

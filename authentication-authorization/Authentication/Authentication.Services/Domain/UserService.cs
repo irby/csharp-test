@@ -17,7 +17,7 @@ namespace Authentication.Services.Domain
         {
         }
 
-        public async Task UpdatePassword(string username, string currentPassword, string newPassword)
+        public async Task UpdatePasswordAsync(string username, string currentPassword, string newPassword)
         {
             ModelValidator.Validate(true, username, currentPassword, newPassword);
 
@@ -36,7 +36,7 @@ namespace Authentication.Services.Domain
             var user = await Db.Users.FirstOrDefaultAsync(p => p.Email == username.Trim().ToLower()) ??
                        throw new UnprocessableEntityException(ErrorCode.AccountNotFound);
 
-            if (user.Id != currentUser.Id && !currentUser.Permissions.Contains(Permission.CanUpdateUserPassword))
+            if (user.Id != currentUser.Id && !currentUser.HasPermissions(Permission.CanUpdateUserPassword))
             {
                 throw new NotAuthorizedException();
             }

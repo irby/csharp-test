@@ -25,7 +25,7 @@ namespace Authentication.Services.Domain.Admin
         public async Task<ICollection<UserResponseDto>> GetUsersAsync()
         {
             var currentUser = await GetCurrentUserAsync();
-            if (!currentUser.Permissions.Contains(Permission.CanListUsers))
+            if (!currentUser.HasPermissions(Permission.CanListUsers))
             {
                 throw new NotAuthorizedException();
             }
@@ -45,7 +45,7 @@ namespace Authentication.Services.Domain.Admin
         public async Task<UserResponseDto> GetUserAsync(Guid id)
         {
             var currentUser = await GetCurrentUserAsync();
-            if (!currentUser.Permissions.Contains(Permission.CanViewUser))
+            if (!currentUser.HasPermissions(Permission.CanViewUser))
             {
                 throw new NotAuthorizedException();
             }
@@ -71,7 +71,7 @@ namespace Authentication.Services.Domain.Admin
             
             var currentUser = await GetCurrentUserAsync();
 
-            if (!currentUser.Permissions.Contains(Permission.CanCreateUser))
+            if (!currentUser.HasPermissions(Permission.CanCreateUser))
             {
                 throw new NotAuthorizedException();
             }
@@ -128,7 +128,7 @@ namespace Authentication.Services.Domain.Admin
         public async Task<UserResponseDto> UpdateUserAsync(UserUpdateDto dto)
         {
             var currentUser = await GetCurrentUserAsync();
-            if (!currentUser.Permissions.Contains(Permission.CanUpdateUser))
+            if (!currentUser.HasPermissions(Permission.CanUpdateUser))
             {
                 throw new NotAuthorizedException();
             }

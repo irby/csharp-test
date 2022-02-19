@@ -4,7 +4,7 @@ using Authentication.Core.Models.Domain.Accounts;
 
 namespace Authentication.Core.Models.Dto
 {
-    public class CreateUserDto
+    public class UserCreateDto
     {
         public string Email { get; set; }
         public string Password { get; set; }

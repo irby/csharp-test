@@ -9,9 +9,10 @@
         AccountDisabled = 103,
         AccountNotFound = 104,
         
-        // Password
+        // Credentials
         NewPasswordEqualsOldPassword = 200,
         IncorrectPassword = 201,
-        InvalidPassword = 202
+        InvalidPassword = 202,
+        InvalidEmail = 203
     }
 }

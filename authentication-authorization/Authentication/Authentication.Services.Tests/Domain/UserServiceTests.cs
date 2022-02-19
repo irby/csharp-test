@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Authentication.Core.Enums;
 using Authentication.Core.Exceptions;
 using Authentication.Core.Extensions;
 using Authentication.Core.Models.Domain.Accounts;
+using Authentication.Core.Models.Dto;
 using Authentication.Core.Utilities;
 using Authentication.Services.Domain;
 using Authentication.Services.Tests.Domain.Shared;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
@@ -16,6 +19,74 @@ namespace Authentication.Services.Tests.Domain
     {
         public override void Init(IServiceCollection services)
         {
+        }
+        
+        [Test]
+        public async Task CreateUserAsync_WhenUserDoesNotExistAndModelIsValid_CreatesUserAsync()
+        {
+            var createUserDto = new UserCreateDto()
+            {
+                Email = "jane.doe@test.com",
+                FirstName = "Jane",
+                LastName = "Doe",
+                Password = "HelloWorld1!"
+            };
+            
+            var user = await Service.CreateUserAsync(createUserDto);
+            Assert.NotNull(user);
+            Assert.AreNotEqual(new Guid(), user.Id);
+            Assert.NotNull(await Db.Users.FirstOrDefaultAsync(p => p.Id == user.Id && p.IsEnabled));
+        }
+        
+        [Test]
+        public async Task CreateUserAsync_WhenPasswordIsNotValid_ThrowsBadRequestExceptionAsync()
+        {
+            var createUserDto = new UserCreateDto()
+            {
+                Email = "jane.doe@test.com",
+                FirstName = "Jane",
+                LastName = "Doe",
+                Password = "helloworld1"
+            };
+
+            var exception = Assert.ThrowsAsync<BadRequestException>(() => Service.CreateUserAsync(createUserDto));
+            Assert.AreEqual(ErrorCode.InvalidPassword, exception.ErrorCode);
+        }
+        
+        [Test]
+        public async Task CreateUserAsync_WhenEmailIsNotValid_ThrowsBadRequestExceptionAsync()
+        {
+            var createUserDto = new UserCreateDto()
+            {
+                Email = "jane.doe",
+                FirstName = "Jane",
+                LastName = "Doe",
+                Password = "HelloWorld1!"
+            };
+
+            var exception = Assert.ThrowsAsync<BadRequestException>(() => Service.CreateUserAsync(createUserDto));
+            Assert.AreEqual(ErrorCode.InvalidEmail, exception.ErrorCode);
+        }
+
+        [Test]
+        public async Task CreateUserAsync_WhenUserAlreadyExists_ThrowsUnprocessableEntityExceptionAsync()
+        {
+            Db.Users.Add(new User()
+            {
+                Email = "jane.doe@test.com"
+            });
+            await Db.SaveChangesAsync();
+            
+            var createUserDto = new UserCreateDto()
+            {
+                Email = "jane.doe@test.com",
+                FirstName = "Jane",
+                LastName = "Doe",
+                Password = "HelloWorld1!"
+            };
+            
+            var exception = Assert.ThrowsAsync<UnprocessableEntityException>(() => Service.CreateUserAsync(createUserDto));
+            Assert.AreEqual(ErrorCode.UserAlreadyExists, exception.ErrorCode);
         }
 
         [Test]

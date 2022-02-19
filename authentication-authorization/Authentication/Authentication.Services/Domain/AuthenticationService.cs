@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Authentication.Core.Enums;
@@ -26,6 +27,8 @@ namespace Authentication.Services.Domain
 
         public async Task<UserResponseDto> LoginUserAsync(string username, string password)
         {
+            ModelValidator.Validate(true, username, password);
+            
             var user = await Db.Users.Where(p => p.Email.Trim().ToLower() == username.Trim().ToLower())
                 .Include(p => p.UserPermissions)
                 .FirstOrDefaultAsync() ?? throw new UnprocessableEntityException(ErrorCode.UsernamePasswordNotValid);
@@ -35,7 +38,7 @@ namespace Authentication.Services.Domain
                 UserId = user.Id
             };
             auditRecord.SetCreated();
-            await Db.AddAsync(auditRecord);
+            await Db.UserLoginAuditRecords.AddAsync(auditRecord);
 
             if (!user.IsEnabled)
             {
@@ -66,57 +69,32 @@ namespace Authentication.Services.Domain
             user.NumberOfLoginFailures = 0;
             await Db.SaveChangesAsync();
 
-            var rolePermissions = await Db.RolePermissions.Where(p => p.Role == user.Role && p.IsEnabled)
-                .Select(p => p.Permission).ToListAsync();
+            var rolePermissions = new List<Permission>();
+
+            if (user.Role == Role.SuperAdmin)
+            {
+                rolePermissions.AddRange(Enum.GetValues(typeof(Permission)).Cast<Permission>());
+            }
+            else
+            {
+                rolePermissions.AddRange(await Db.RolePermissions.Where(p => p.Role == user.Role && p.IsEnabled)
+                    .Select(p => p.Permission).ToListAsync());
+            }
 
             return new UserResponseDto()
             {
+                Id = user.Id,
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 UserRole = user.Role,
+                IsEnabled = user.IsEnabled,
                 Permissions = rolePermissions
                     .Union(user.UserPermissions.Select(p => p.Permission))
                     .ToList()
             };
         }
 
-        public async Task<UserResponseDto> CreateUserAsync(CreateUserDto createUserDto)
-        {
-            ModelValidator.Validate(true, createUserDto.Email, createUserDto.Password, createUserDto.FirstName, createUserDto.LastName);
-            var user = await Db.Users.Where(p => p.Email.Trim().ToLower() == createUserDto.Email.Trim().ToLower())
-                .Include(p => p.UserPermissions)
-                .FirstOrDefaultAsync();
-
-            if (user != null)
-                throw new UnprocessableEntityException(ErrorCode.UserAlreadyExists);
-
-            user = new User()
-            {
-                Email = createUserDto.Email.Trim().ToLower(),
-                FirstName = createUserDto.FirstName.Trim().ToLower(),
-                LastName = createUserDto.LastName.Trim().ToLower(),
-                HashedPassword = HashUtil.HashPassword(createUserDto.Password),
-                Role = Role.User
-            };
-            
-            user.SetCreatedAndEnabled();
-
-            await Db.SaveChangesAsync();
-            
-            var rolePermissions = await Db.RolePermissions.Where(p => p.Role == user.Role && p.IsEnabled)
-                .Select(p => p.Permission).ToListAsync();
-            
-            return new UserResponseDto()
-            {
-                Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                UserRole = user.Role,
-                Permissions = rolePermissions
-                    .Union(user.UserPermissions.Select(p => p.Permission))
-                    .ToList()
-            };
-        }
+        
     }
 }

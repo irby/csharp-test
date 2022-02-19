@@ -41,7 +41,7 @@ namespace Authentication.Services.Domain
             return user;
         }
         
-        public async Task<User> GetUserAsync(Guid id)
+        private async Task<User> GetUserAsync(Guid id)
         {
             _log.LogDebug($"Checking cache for user '{id}'");
             User user = null;
@@ -97,7 +97,7 @@ namespace Authentication.Services.Domain
             return user;
         }
         
-        public async Task CacheUserAsync(User user)
+        private async Task CacheUserAsync(User user)
         {
             // expire the cached user entry every 5 minutes
             var expiration = DateTimeOffset.UtcNow.AddMinutes(5);

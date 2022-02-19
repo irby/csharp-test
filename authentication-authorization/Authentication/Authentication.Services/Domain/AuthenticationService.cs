@@ -81,42 +81,6 @@ namespace Authentication.Services.Domain
             };
         }
 
-        public async Task<UserResponseDto> CreateUserAsync(CreateUserDto createUserDto)
-        {
-            ModelValidator.Validate(true, createUserDto.Email, createUserDto.Password, createUserDto.FirstName, createUserDto.LastName);
-            var user = await Db.Users.Where(p => p.Email.Trim().ToLower() == createUserDto.Email.Trim().ToLower())
-                .Include(p => p.UserPermissions)
-                .FirstOrDefaultAsync();
-
-            if (user != null)
-                throw new UnprocessableEntityException(ErrorCode.UserAlreadyExists);
-
-            user = new User()
-            {
-                Email = createUserDto.Email.Trim().ToLower(),
-                FirstName = createUserDto.FirstName.Trim().ToLower(),
-                LastName = createUserDto.LastName.Trim().ToLower(),
-                HashedPassword = HashUtil.HashPassword(createUserDto.Password),
-                Role = Role.User
-            };
-            
-            user.SetCreatedAndEnabled();
-
-            await Db.SaveChangesAsync();
-            
-            var rolePermissions = await Db.RolePermissions.Where(p => p.Role == user.Role && p.IsEnabled)
-                .Select(p => p.Permission).ToListAsync();
-            
-            return new UserResponseDto()
-            {
-                Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                UserRole = user.Role,
-                Permissions = rolePermissions
-                    .Union(user.UserPermissions.Select(p => p.Permission))
-                    .ToList()
-            };
-        }
+        
     }
 }

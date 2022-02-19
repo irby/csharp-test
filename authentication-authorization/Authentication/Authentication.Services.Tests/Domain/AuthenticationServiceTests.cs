@@ -21,42 +21,6 @@ namespace Authentication.Services.Tests.Domain
         }
 
         [Test]
-        public async Task CreateUserAsync_WhenUserDoesNotExistAndModelIsValid_CreatesUserAsync()
-        {
-            var createUserDto = new CreateUserDto()
-            {
-                Email = "jane.doe@test.com",
-                FirstName = "Jane",
-                LastName = "Doe",
-                Password = "HelloWorld"
-            };
-            
-            var user = await Service.CreateUserAsync(createUserDto);
-            Assert.NotNull(user);
-        }
-
-        [Test]
-        public async Task CreateUserAsync_WhenUserAlreadyExists_ThrowsExceptionAsync()
-        {
-            Db.Users.Add(new User()
-            {
-                Email = "jane.doe@test.com"
-            });
-            await Db.SaveChangesAsync();
-            
-            var createUserDto = new CreateUserDto()
-            {
-                Email = "jane.doe@test.com",
-                FirstName = "Jane",
-                LastName = "Doe",
-                Password = "HelloWorld"
-            };
-            
-            var exception = Assert.ThrowsAsync<UnprocessableEntityException>(() => Service.CreateUserAsync(createUserDto));
-            Assert.AreEqual(ErrorCode.UserAlreadyExists, exception.ErrorCode);
-        }
-        
-        [Test]
         public async Task LoginUserAsync_WhenUsernameAndPasswordAreValid_ReturnsUserAsync()
         {
             var user = new User()
